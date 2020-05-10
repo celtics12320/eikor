@@ -1,1 +1,35 @@
-# Doc for the Azure Web Apps Deploy action 
+# Doc for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More Github Actions For Azure: https://github.com/Azure/actions
+
+name: Build and deploy ASP.Net Core app to Azure Web App - linewebhookcore
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/celtics12320@master
+    
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v1
+      wuch:
+        dotnet-version: '3.1.102'
+        
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+      
+    - name: dotnet publish
+      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v1
+      with:
+        app-name: 'linewebhookcore'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_99979334ed364353bb50aca7b2ff9fc5 }}
+        package: ${{env.DOTNET_ROOT}}/myapp
